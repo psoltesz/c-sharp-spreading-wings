@@ -10,20 +10,23 @@ namespace CreateClass
     {
         static void Main(string[] args)
         {
-            Person person1 = new Person("Jani", "1992.04.02.");
-            Employee employee1 = new Employee("Dénes", "1990.04.05.", "programmer", 300000);
-            Console.WriteLine(person1.ToString());
-            Console.WriteLine(employee1.ToString());
+            Employee Kovacs = new Employee("Géza", DateTime.Now, "léhűtő", 1000);
+            Kovacs.Room = new Room(111);
+            Employee Kovacs2 = (Employee)Kovacs.Clone();
+            Kovacs2.Room.Number = 112;
+            Console.WriteLine(Kovacs.ToString());
+            Console.WriteLine(Kovacs2.ToString());
             Console.ReadKey();
         }
     }
 
     class Person
     {
-        public String name, birthdate;
+        public String name;
+        public DateTime birthdate;
         public Gender gender;
 
-        public Person(string name, string birthdate)
+        public Person(string name, DateTime birthdate)
         {
             this.name = name;
             this.birthdate = birthdate;
@@ -38,28 +41,38 @@ namespace CreateClass
 
     }
 
-    class Employee : Person
+    class Employee : Person, ICloneable
     {
-        
         String profession;
         int salary;
-        int roomNumber;
+        internal Room Room;
 
-        public Employee(string name, string birthdate, string profession, int salary) : base(name, birthdate)
+        public Employee(string name, DateTime birthdate, string profession, int salary) : base(name, birthdate)
         {
             this.profession = profession;
             this.salary = salary;
-            this.roomNumber = Room.roomNumber;
         }
 
         public override string ToString()
         {
-            return "Person details: " + name + " (gender: " + gender + "), born at " + birthdate + " - profession: " + profession + ", salary: " + salary + " - room number: " + roomNumber;
+            return "Person details: " + name + " (gender: " + gender + "), born at " + birthdate + " - profession: " + profession + ", salary: " + salary + " - room number: " + Room.Number;
+        }
+
+        public object Clone()
+        {
+            Employee newEmployee = (Employee)this.MemberwiseClone();
+            newEmployee.Room = new Room(Room.Number);
+            return newEmployee;
         }
     }
 
     class Room
     {
-        public static int roomNumber = 42;
+        public int Number;
+
+        public Room(int Number)
+        {
+            this.Number = Number;
+        }
     }
 }
